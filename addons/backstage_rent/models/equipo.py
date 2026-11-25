@@ -18,6 +18,11 @@ class Equipo(models.Model):
         ('alquilado', 'Alquilado'),
         ('reparacion', 'En el taller'),
     ], string='Estado', default='disponible')
+
     fecha_compra=fields.Date(string='Fecha de compra')
+
     notas=fields.Text(string='notas')
+
     active = fields.Boolean(string='Activo', default=True)
+    
+    imagen = fields.Image(string='Foto', max_width=1024,max_height=1024 )

@@ -1,12 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- 1. Catálogo de tarjetas (kanban) -->
+    <record id="view_backstage_equipo_kanban" model="ir.ui.view">
+        <field name="name">backstage.equipo.kanban</field>
+        <field name="model">backstage.equipo</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <templates>
+                    <t t-name="card" class="flex-row">
+                        <aside>
+                            <field name="imagen" widget="image"
+                                   options="{'img_class': 'object-fit-contain w-100'}"/>
+                        </aside>
+                        <main class="ms-2">
+                            <field name="name" class="fw-bold fs-5"/>
+                            <field name="categoria" class="text-muted"/>
+                            <div><field name="precio_dia"/> € / día</div>
+                            <field name="estado" widget="badge"
+                                   decoration-success="estado == 'disponible'"
+                                   decoration-warning="estado == 'alquilado'"
+                                   decoration-danger="estado == 'reparacion'"/>
+                        </main>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- 2. Lista con colores -->
+    <record id="view_backstage_equipo_list" model="ir.ui.view">
+        <field name="name">backstage.equipo.list</field>
+        <field name="model">backstage.equipo</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="categoria"/>
+                <field name="precio_dia"/>
+                <field name="estado" widget="badge"
+                       decoration-success="estado == 'disponible'"
+                       decoration-warning="estado == 'alquilado'"
+                       decoration-danger="estado == 'reparacion'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 3. Formulario -->
+    <record id="view_backstage_equipo_form" model="ir.ui.view">
+        <field name="name">backstage.equipo.form</field>
+        <field name="model">backstage.equipo</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="estado" widget="statusbar"
+                           options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="En el taller" bg_color="text-bg-danger"
+ invisible="estado != 'reparacion'"/>
+                    <field name="imagen" widget="image" class="oe_avatar"/>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nombre del equipo"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="categoria"/>
+                            <field name="precio_dia"/>
+                        </group>
+                        <group>
+                            <field name="fecha_compra"/>
+                        </group>
+                    </group>
+                    <field name="notas" placeholder="Notas sobre el equipo..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Acción: ahora se abre primero el catálogo -->
     <record id="action_backstage_equipo" model="ir.actions.act_window">
         <field name="name">Equipos</field>
         <field name="res_model">backstage.equipo</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
     </record>
 
-    <menuitem id="menu_backstage_root" name="BackStage Rent"/>
+    <menuitem id="menu_backstage_root" name="BackStage Rent"
+ web_icon="backstage_rent,static/description/icon.png"/>
     <menuitem id="menu_backstage_equipos" name="Equipos"
               parent="menu_backstage_root"
               action="action_backstage_equipo"/>
